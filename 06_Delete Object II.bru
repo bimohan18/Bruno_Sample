@@ -1,0 +1,26 @@
+meta {
+  name: 06_Delete Object II
+  type: http
+  seq: 6
+  tags: [
+    regression
+    delete
+    updatedelete
+  ]
+}
+
+delete {
+  url: https://{{base_url}}/{{id2}}
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.statusText: eq OK
+  res.body.message: eq "Object with id = {{id2}} has been deleted."
+}
+
+settings {
+  encodeUrl: true
+}

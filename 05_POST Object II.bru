@@ -1,0 +1,59 @@
+meta {
+  name: 05_POST Object II
+  type: http
+  seq: 6
+  tags: [
+    regression
+    create
+  ]
+}
+
+post {
+  url: https://{{base_url}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+     "name": "Apple MacBook Pro 18",
+     "data": {
+        "year": 2024,
+        "price": 3849.99,
+        "CPU model": "Intel Core i12",
+        "Hard disk size": "2 TB"
+     }
+  }
+}
+
+assert {
+  res.body.id: contains ff
+  res.status: eq 200
+  res.statusText: eq OK
+  res.body.data.year: isNumber
+  res.body.data.price: gt 1800
+  res.body.createdAt: isString
+  res.body: isJson
+}
+
+tests {
+  test("Capture id and store globally", function () {
+      const body = res.getBody();
+      const id2 = body.id;
+      expect(id2).to.not.be.undefined;
+      bru.setVar("id2", id2);
+  });
+  
+  test("Status code is 200",function (){
+    expect(res.getStatus()).to.equal(200)
+  });
+  
+  test("Response body has 'CPU Model'", function () {
+      const body = res.getBody();
+      expect(body.data).to.have.property("CPU model");
+  });
+}
+
+settings {
+  encodeUrl: true
+}

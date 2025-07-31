@@ -1,0 +1,63 @@
+meta {
+  name: 03_PUT Object (Update Price & Add Colour)
+  type: http
+  seq: 3
+  tags: [
+    regression
+    update
+  ]
+}
+
+put {
+  url: https://{{base_url}}/{{id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+     "name": "{{name}}",
+     "data": {
+        "year": {{year}},
+        "price": 2849.99,
+        "CPU model": "{{cpumodel}}",
+        "Hard disk size": "{{harddisksize}}",
+        "color":"Black"
+     }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.statusText: eq OK
+  res.body.data.color: isString
+}
+
+tests {
+  let requestBody = req.getBody();
+  let responseBody = res.getBody();
+  
+  test("Response body has 'CPU Model'", function () {
+      expect(requestBody.name).to.equal(responseBody.name);
+  });
+  
+  if (JSON.stringify(requestBody.name) === JSON.stringify(responseBody.name)) {
+    if (JSON.stringify(requestBody.data.year) === JSON.stringify(responseBody.data.year)) {
+      if (JSON.stringify(requestBody.data.price) === JSON.stringify(responseBody.data.price)) {
+        if (JSON.stringify(requestBody.data["CPU model"]) === JSON.stringify(responseBody.data["CPU model"])) {
+          if (JSON.stringify(requestBody.data["Hard disk size"]) === JSON.stringify(responseBody.data["Hard disk size"])) {
+            if (JSON.stringify(requestBody.data.color) === JSON.stringify(responseBody.data.color)) {
+              console.log("✅ Request and Response bodies match exactly.");
+            }
+          }
+        }
+      }
+    }
+  } else {
+    console.log("❌ Request and Response bodies do NOT match.");
+  }
+}
+
+settings {
+  encodeUrl: true
+}

@@ -1,0 +1,67 @@
+meta {
+  name: 02_GET Object
+  type: http
+  seq: 2
+  tags: [
+    smoke
+    regression
+    read
+  ]
+}
+
+get {
+  url: https://{{base_url}}/{{id}}
+  body: none
+  auth: inherit
+}
+
+assert {
+  res.status: eq 200
+  res.statusText: eq OK
+  res.headers.connection: isString
+}
+
+tests {
+  test("Status code is 200",function (){
+    expect(res.getStatus()).to.equal(200)
+  });
+  
+  test("Response body has 'CPU Model'", function () {
+      const body = res.getBody();
+      expect(body.data).to.have.property("CPU model");
+  });
+  
+  test("Capture name and store globally", function () {
+      const body = res.getBody();
+      const name = body.name;
+      expect(name).to.not.be.undefined;
+      bru.setVar("name", name);
+  });
+  
+  test("Capture year and store globally", function () {
+      const body = res.getBody();
+      const year = body.data.year;
+      expect(year).to.not.be.undefined;
+      bru.setVar("year", year);
+  });
+  
+  test("Capture cpumodel and store globally", function () {
+      const body = res.getBody();
+      const cpumodel = body.data["CPU model"];
+      expect(cpumodel).to.not.be.undefined;
+      bru.setVar("cpumodel", cpumodel);
+  });
+  
+  test("Capture harddisksize and store globally", function () {
+      const body = res.getBody();
+      const harddisksize = body.data["Hard disk size"];
+      expect(harddisksize).to.not.be.undefined;
+      bru.setVar("harddisksize", harddisksize);
+  });
+  
+  console.log
+}
+
+settings {
+  encodeUrl: true
+}

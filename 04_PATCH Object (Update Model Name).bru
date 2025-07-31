@@ -1,0 +1,46 @@
+meta {
+  name: 04_PATCH Object (Update Model Name)
+  type: http
+  seq: 4
+  tags: [
+    regression
+    update
+  ]
+}
+
+patch {
+  url: https://{{base_url}}/{{id}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+  "name":"Apple MacBook Pro 25"
+  }
+}
+
+assert {
+  res.body.name: contains "Apple MacBook Pro 25"
+  res.statusText: eq OK
+  res.status: eq 200
+}
+
+tests {
+  let requestBody = req.getBody();
+  let responseBody = res.getBody();
+  
+  
+  let isNameMatch = JSON.stringify(requestBody.name) === JSON.stringify(responseBody.name);
+  
+  if (isNameMatch) {
+    console.log("✅ User object matches.");
+  } else {
+    console.log("❌ User object does not match.");
+  }
+  
+}
+
+settings {
+  encodeUrl: true
+}
